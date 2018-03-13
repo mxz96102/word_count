@@ -2,6 +2,10 @@ package com.company;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -44,6 +48,28 @@ public class Main {
         }
 
         return contents;
+
+    }
+
+    public Set<String> buildBanWord(String banlistFile) {
+
+    }
+
+    public int countWord(String str, Set<String> banWords) {
+        Matcher wordMatcher = Pattern.compile("\\b([a-z]\\w+[a-zA-Z]){1}\\b").matcher(str);
+        int count = 0;
+
+        if(banWords.size() == 0) {
+            while(wordMatcher.find()) {
+                count++;
+            }
+        } else {
+            while(wordMatcher.find()) {
+                if(!banWords.contains(wordMatcher.group(0))) count++;
+            }
+        }
+
+        return count;
 
     }
 
