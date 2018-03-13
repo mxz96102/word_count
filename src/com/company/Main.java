@@ -9,6 +9,12 @@ public class Main {
         System.out.printf("[ERROR]: %s\n", err);
     }
 
+    /**
+     * Read file to string lines.
+     * @param filepath {String}
+     * @return contents {ArrayList<String>}
+     */
+
     public ArrayList<String> getFileContents(String filepath) {
         File f = new File(filepath);
 
