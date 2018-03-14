@@ -17,7 +17,7 @@ public class Main {
      * @return contents {ArrayList<String>}
      */
 
-    public ArrayList<String> getFileContents(String filepath) {
+    public static ArrayList<String> getFileContents(String filepath) {
         File f = new File(filepath);
 
         ArrayList<String> contents = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Main {
 
     }
 
-    public Set<String> buildBanWord(String banlistFile) {
+    public static Set<String> buildBanWord(String banlistFile) {
         return null;
     }
 
@@ -72,7 +72,66 @@ public class Main {
         return count;
     }
 
+    public static class ArgsParser {
+        Boolean c = false;
+        Boolean w = false;
+        Boolean l = false;
+        Boolean s = false;
+        Boolean a = false;
+        Boolean o = false;
+        Boolean e = false;
+        String filePath;
+        String outPath;
+        String banPath;
+
+        ArgsParser(String[] args) {
+            for (int i = 0; i < args.length; i++) {
+                System.out.println(args[i].charAt(0) == '-');
+                if(args[i].charAt(0) == '-' && args[i].length() < 3) {
+                    switch (args[i].charAt(1)) {
+                        case 't':
+                            this.c = true;
+                            break;
+                        case 'w':
+                            this.w = true;
+                            break;
+                        case 'l':
+                            this.l = true;
+                            break;
+                        case 's':
+                            this.s = true;
+                            break;
+                        case 'a':
+                            this.a = true;
+                            break;
+                        case 'o':
+                            this.o = true;
+                            i++;
+                            if(i < args.length) {
+                                this.outPath = args[i];
+                            }
+                            break;
+                        case 'e':
+                            this.e = true;
+                            i++;
+                            if(i < args.length) {
+                                this.banPath = args[i];
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    this.filePath = args[i];
+                }
+
+            }
+        }
+
+    }
+
     public static void main(String[] args) {
 	// write your code here
+        ArgsParser ap = (new ArgsParser(args));
     }
 }
