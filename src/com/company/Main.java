@@ -1,9 +1,7 @@
 package com.company;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +50,16 @@ public class Main {
     }
 
     public Set<String> buildBanWord(String banlistFile) {
-
+        return null;
     }
 
-    public int countWord(String str, Set<String> banWords) {
+    /**
+     * Count words (split with " " and ",")
+     * @param str {String}
+     * @param banWords {Set<String>}
+     * @return count {int}
+     */
+    public static int countWord(String str, Set<String> banWords) {
         int count = 0;
         String[] splitStr = str.split(" |,");
 
@@ -67,7 +71,6 @@ public class Main {
 
         return count;
     }
-
 
     public static void main(String[] args) {
 	// write your code here
