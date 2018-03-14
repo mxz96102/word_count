@@ -84,6 +84,10 @@ public class Main {
         String outPath;
         String banPath;
 
+        /**
+         * Parse arg into instance
+         * @param args {String[]}
+         */
         ArgsParser(String[] args) {
             for (int i = 0; i < args.length; i++) {
                 System.out.println(args[i].charAt(0) == '-');
@@ -124,7 +128,6 @@ public class Main {
                 } else {
                     this.filePath = args[i];
                 }
-
             }
         }
 
