@@ -56,22 +56,18 @@ public class Main {
     }
 
     public int countWord(String str, Set<String> banWords) {
-        Matcher wordMatcher = Pattern.compile("\\b([a-z]\\w+[a-zA-Z]){1}\\b").matcher(str);
         int count = 0;
+        String[] splitStr = str.split(" |,");
 
-        if(banWords.size() == 0) {
-            while(wordMatcher.find()) {
+        for (String word : splitStr) {
+            if (!banWords.contains(word)) {
                 count++;
-            }
-        } else {
-            while(wordMatcher.find()) {
-                if(!banWords.contains(wordMatcher.group(0))) count++;
             }
         }
 
         return count;
-
     }
+
 
     public static void main(String[] args) {
 	// write your code here
