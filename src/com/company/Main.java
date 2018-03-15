@@ -131,6 +131,32 @@ public class Main {
 
     }
 
+    /**
+     * count line.
+     * @param contents {String[]}
+     * @return [codeline, nullline, docline] {int[]}
+     */
+    public static int[] countline(String[] contents) {
+        int[] linecount = {0, 0, 0};
+
+        for (String line : contents) {
+            if(line.split(" |\n|\t").length > line.length()) {
+                linecount[1]++;
+
+                if(!line.matches("[0-9a-zA-Z]") && line.contains("//")) {
+                    linecount[2]++;
+                }
+
+            } else {
+                if(line.contains("//")) {
+                    linecount[2]++;
+                }
+
+                linecount[0]++;
+            }
+        }
+    }
+
     public static void main(String[] args) {
 	// write your code here
         ArgsParser ap = (new ArgsParser(args));
