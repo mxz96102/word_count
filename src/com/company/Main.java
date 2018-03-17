@@ -284,7 +284,7 @@ public class Main {
             for(File f : fp.listFiles()) {
                 if(f.isFile()) {
                     sal.add(f.getPath());
-                } else if(f.isDirectory()) {
+                } else if(f.isDirectory() && s) {
                     sal.addAll(Arrays.asList(findfiles(f.getPath(), s)));
                 }
             }
