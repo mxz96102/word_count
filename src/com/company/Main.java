@@ -5,7 +5,7 @@ import java.util.*;
 
 public class Main {
 
-    public static void error(String err) {
+    private static void error(String err) {
         System.out.printf("[ERROR]: %s\n", err);
     }
 
@@ -15,12 +15,13 @@ public class Main {
      * @return contents {ArrayList<String>}
      */
 
-    public static ArrayList<String> getFileContents(String filepath) {
+    private static ArrayList<String> getFileContents(String filepath) {
         File f = new File(filepath);
 
         ArrayList<String> contents = new ArrayList<>();
 
         if(!f.exists() || !f.isFile()){
+            error(f.getName() + "file not found");
             return contents;
         }
 
@@ -37,8 +38,6 @@ public class Main {
             fileInputStream.close();
             inputStreamReader.close();
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +51,7 @@ public class Main {
      * @return words {String[]}
      * @throws IOException
      */
-    public static String[] fileToWord(String filePath) throws IOException {
+    private static String[] fileToWord(String filePath) throws IOException {
         InputStream is = new FileInputStream(filePath);
         StringBuilder buffer = new StringBuilder();
         String line;
@@ -66,7 +65,7 @@ public class Main {
         reader.close();
         is.close();
 
-        return buffer.toString().split("\n| |\t");
+        return buffer.toString().split("[\n \t]");
     }
 
     /**
@@ -74,7 +73,7 @@ public class Main {
      * @param banlistFile {String}
      * @return banwordset {Set<String>}
      */
-    public static Set<String> buildBanWord(String banlistFile) {
+    private static Set<String> buildBanWord(String banlistFile) {
         Set<String> s = new HashSet<>();
 
         s.add("");
@@ -88,6 +87,7 @@ public class Main {
 
             s.addAll(Arrays.asList(words));
         } catch (IOException e) {
+            error("ban word list read error");
             e.printStackTrace();
         }
 
@@ -100,9 +100,9 @@ public class Main {
      * @param banWords {Set<String>}
      * @return count {int}
      */
-    public static int countWord(String str, Set<String> banWords) {
+    private static int countWord(String str, Set<String> banWords) {
         int count = 0;
-        String[] splitStr = str.split(" |,");
+        String[] splitStr = str.split("[ ,]");
 
         for (String word : splitStr) {
             if (!banWords.contains(word)) {
@@ -113,7 +113,7 @@ public class Main {
         return count;
     }
 
-    public static class ArgsParser {
+    private static class ArgsParser {
         Boolean c = false;
         Boolean w = false;
         Boolean l = false;
@@ -178,7 +178,7 @@ public class Main {
      * @param contents {String[]}
      * @return [codeline, nullline, docline] {int[]}
      */
-    public static int[] countline(String[] contents) {
+    private static int[] countline(String[] contents) {
         int[] linecount = {0, 0, 0};
 
         for (String line : contents) {
@@ -203,7 +203,7 @@ public class Main {
      * @param contents {String[]}
      * @return sum {int}
      */
-    public static int sumChar(String[] contents) {
+    private static int sumChar(String[] contents) {
         int sum = 0;
 
         for (String line : contents) {
@@ -217,12 +217,8 @@ public class Main {
      * confirm file exists or create it
      * @param filepath {String}
      */
-    public static void confirmFile(String filepath) {
+    private static void confirmFile(String filepath) {
         File f = new File(filepath);
-
-        if(!f.isFile()) {
-
-        }
 
         try {
             if(!f.exists()) {
@@ -240,7 +236,7 @@ public class Main {
      * @param ap {ArgsParser}
      * @throws FileNotFoundException
      */
-    public static void countFile(String filepath, ArgsParser ap) throws FileNotFoundException {
+    private static void countFile(String filepath, ArgsParser ap) throws FileNotFoundException {
         ArrayList<String> lineList = getFileContents(filepath);
         String[] contents = lineList.toArray(new String[lineList.size()]);
         String outPath = "result.txt";
@@ -286,7 +282,7 @@ public class Main {
      * @param filepath {String}
      * @return filepathlist {String}
      */
-    public static String[] findfiles(String filepath) {
+    private static String[] findfiles(String filepath) {
         int idx = filepath.lastIndexOf('/');
         String dirpath, filename;
         ArrayList<String> sal = new ArrayList<>();
@@ -305,6 +301,7 @@ public class Main {
 
         File[] fs = (new File(dirpath)).listFiles();
 
+        assert fs != null;
         for (File f : fs) {
             if(f.getName().matches(filename) && f.isFile()) {
                 sal.add(dirpath + f.getName());
