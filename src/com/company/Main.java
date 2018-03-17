@@ -55,13 +55,13 @@ public class Main {
     public static String[] fileToWord(String filePath) throws IOException {
         InputStream is = new FileInputStream(filePath);
         StringBuilder buffer = new StringBuilder();
-        String line; // 用来保存每行读取的内容
+        String line;
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        line = reader.readLine(); // 读取第一行
-        while (line != null) { // 如果 line 为空说明读完了
-            buffer.append(line); // 将读到的内容添加到 buffer 中
-            buffer.append("\n"); // 添加换行符
-            line = reader.readLine(); // 读取下一行
+        line = reader.readLine();
+        while (line != null) {
+            buffer.append(line);
+            buffer.append(" ");
+            line = reader.readLine();
         }
         reader.close();
         is.close();
@@ -182,14 +182,15 @@ public class Main {
         int[] linecount = {0, 0, 0};
 
         for (String line : contents) {
-            if(line.trim().length() == 0) {
+            if(line.trim().length() <= 1) {
                 linecount[1]++;
             } else {
-                if(line.contains("//")) {
-                    linecount[2]++;
-                }
-                if(line.trim().indexOf("//") > 0) {
+                if(!line.trim().contains("//")) {
                     linecount[0]++;
+                } else if(line.replaceAll(" ", "").indexOf("//") > 1) {
+                    linecount[0]++;
+                } else if(line.contains("//")) {
+                    linecount[2]++;
                 }
             }
         }
@@ -253,7 +254,7 @@ public class Main {
         PrintWriter out = new PrintWriter(outPath);
 
         if(ap.c) {
-            out.printf("%s, 字符数: %d", filepath, sumChar(contents));
+            out.printf("%s, 字符数: %d\n", filepath, sumChar(contents));
         }
 
         if(ap.w) {
@@ -264,22 +265,27 @@ public class Main {
                 wordCount += countWord(line, banset);
             }
 
-            out.printf("%s, 单词数: %d", filepath, wordCount);
+            out.printf("%s, 单词数: %d\n", filepath, wordCount);
         }
 
         if(ap.l) {
-            out.printf("%s, 行数: %d", filepath, contents.length);
+            out.printf("%s, 行数: %d\n", filepath, contents.length);
         }
 
         if(ap.w) {
             int[] lineCout = countline(contents);
 
-            out.printf("%s, 代码行/空行/注释行: %d/%d/%d", filepath, lineCout[0], lineCout[1], lineCout[2]);
+            out.printf("%s, 代码行/空行/注释行: %d/%d/%d\n", filepath, lineCout[0], lineCout[1], lineCout[2]);
         }
 
         out.close();
     }
 
+    /**
+     * find files by path name
+     * @param filepath {String}
+     * @return filepathlist {String}
+     */
     public static String[] findfiles(String filepath) {
         int idx = filepath.lastIndexOf('/');
         String dirpath, filename;
@@ -293,10 +299,14 @@ public class Main {
             filename = filepath;
         }
 
+        if(filename.contains("*")) {
+            filename = filename.replaceAll("\\*", "\\\\w*");
+        }
+
         File[] fs = (new File(dirpath)).listFiles();
 
         for (File f : fs) {
-            if(f.getName().matches(filename)) {
+            if(f.getName().matches(filename) && f.isFile()) {
                 sal.add(dirpath + f.getName());
             }
         }
@@ -311,6 +321,7 @@ public class Main {
         String[] fileList = findfiles(ap.filePath);
 
         for(String f: fileList) {
+            System.out.println(f);
             try {
                 countFile(f, ap);
             } catch (FileNotFoundException e) {
