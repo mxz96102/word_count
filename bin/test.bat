@@ -1,4 +1,3 @@
-EHCO OFF
 wc.exe -a ../test/test.c
 wc.exe -l ../test/test.c -o out1.txt
 wc.exe -w ../test/test.c -o out2.txt
