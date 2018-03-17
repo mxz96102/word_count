@@ -1,6 +1,7 @@
 package com.company;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -259,7 +260,7 @@ public class Main {
             out.printf("%s, 行数: %d\n", filepath, contents.length);
         }
 
-        if(ap.w) {
+        if(ap.a) {
             int[] lineCout = countline(contents);
 
             out.printf("%s, 代码行/空行/注释行: %d/%d/%d\n", filepath, lineCout[0], lineCout[1], lineCout[2]);
@@ -271,31 +272,42 @@ public class Main {
      * @param filepath {String}
      * @return filepathlist {String}
      */
-    private static String[] findfiles(String filepath) {
+    private static String[] findfiles(String filepath, boolean s) {
+        File fp = new File(filepath);
         int idx = filepath.lastIndexOf('/');
         String dirpath, filename;
         ArrayList<String> sal = new ArrayList<>();
 
-        if(idx > 0) {
-            dirpath = "./" + filepath.substring(0, idx+1);
-            filename = filepath.substring(idx+1, filepath.length());
+        if(fp.isDirectory()) {
+            for(File f : fp.listFiles()) {
+                if(f.isFile()) {
+                    sal.add(f.getPath());
+                } else if(f.isDirectory()) {
+                    sal.addAll(Arrays.asList(findfiles(f.getPath(), s)));
+                }
+            }
         } else {
-            dirpath = "./";
-            filename = filepath;
-        }
+            if(idx > 0) {
+                dirpath = "./" + filepath.substring(0, idx+1);
+                filename = filepath.substring(idx+1, filepath.length());
+            } else {
+                dirpath = "./";
+                filename = filepath;
+            }
 
-        if(filename.contains("*")) {
-            filename = filename.replaceAll("\\*", "\\\\w*");
-        }
+            if(filename.contains("*")) {
+                filename = filename.replaceAll("\\*", "\\\\w*");
+            }
 
-        File[] fs = (new File(dirpath)).listFiles();
+            File[] fs = (new File(dirpath)).listFiles();
 
-        assert fs != null;
-        for (File f : fs) {
-            System.out.println(f.getName().matches(filename));
-            if(f.getName().matches(filename) && f.isFile()) {
-                sal.add(dirpath + f.getName());
-                System.out.println(dirpath + f.getName());
+            assert fs != null;
+            for (File f : fs) {
+                System.out.println(f.getName().matches(filename));
+                if(f.getName().matches(filename) && f.isFile()) {
+                    sal.add(dirpath + f.getName());
+                    System.out.println(dirpath + f.getName());
+                }
             }
         }
 
@@ -303,9 +315,18 @@ public class Main {
     }
 
     public static void main(String[] args) {
-	// write your code here
+        if(args.length == 0) {
+            error("please input some argument in command line");
+            return;
+        }
+
         ArgsParser ap = (new ArgsParser(args));
         String outPath = "result.txt";
+
+        if(ap.filePath == null) {
+            error("lack of file name");
+            return;
+        }
 
         if(ap.o) {
             outPath = ap.outPath;
@@ -317,7 +338,7 @@ public class Main {
         try {
             out = new PrintWriter(outPath);
 
-            String[] fileList = findfiles(ap.filePath);
+            String[] fileList = findfiles(ap.filePath, ap.s);
 
             for(String f: fileList) {
                 System.out.println(f);
