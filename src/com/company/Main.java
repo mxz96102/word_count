@@ -234,20 +234,10 @@ public class Main {
      * count file content
      * @param filepath {String}
      * @param ap {ArgsParser}
-     * @throws FileNotFoundException
      */
-    private static void countFile(String filepath, ArgsParser ap) throws FileNotFoundException {
+    private static void countFile(String filepath, ArgsParser ap, PrintWriter out) {
         ArrayList<String> lineList = getFileContents(filepath);
         String[] contents = lineList.toArray(new String[lineList.size()]);
-        String outPath = "result.txt";
-
-        if(ap.o) {
-            outPath = ap.outPath;
-        }
-
-        confirmFile(outPath);
-
-        PrintWriter out = new PrintWriter(outPath);
 
         if(ap.c) {
             out.printf("%s, 字符数: %d\n", filepath, sumChar(contents));
@@ -258,6 +248,7 @@ public class Main {
             int wordCount = 0;
 
             for(String line : contents) {
+                System.out.println(line);
                 wordCount += countWord(line, banset);
             }
 
@@ -273,8 +264,6 @@ public class Main {
 
             out.printf("%s, 代码行/空行/注释行: %d/%d/%d\n", filepath, lineCout[0], lineCout[1], lineCout[2]);
         }
-
-        out.close();
     }
 
     /**
@@ -288,8 +277,8 @@ public class Main {
         ArrayList<String> sal = new ArrayList<>();
 
         if(idx > 0) {
-            dirpath = filepath.substring(0, idx);
-            filename = filepath.substring(idx);
+            dirpath = "./" + filepath.substring(0, idx+1);
+            filename = filepath.substring(idx+1, filepath.length());
         } else {
             dirpath = "./";
             filename = filepath;
@@ -303,8 +292,10 @@ public class Main {
 
         assert fs != null;
         for (File f : fs) {
+            System.out.println(f.getName().matches(filename));
             if(f.getName().matches(filename) && f.isFile()) {
                 sal.add(dirpath + f.getName());
+                System.out.println(dirpath + f.getName());
             }
         }
 
@@ -314,16 +305,28 @@ public class Main {
     public static void main(String[] args) {
 	// write your code here
         ArgsParser ap = (new ArgsParser(args));
+        String outPath = "result.txt";
 
-        String[] fileList = findfiles(ap.filePath);
+        if(ap.o) {
+            outPath = ap.outPath;
+        }
 
-        for(String f: fileList) {
-            System.out.println(f);
-            try {
-                countFile(f, ap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        confirmFile(outPath);
+
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(outPath);
+
+            String[] fileList = findfiles(ap.filePath);
+
+            for(String f: fileList) {
+                System.out.println(f);
+                countFile(f, ap, out);
             }
+
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
