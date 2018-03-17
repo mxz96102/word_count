@@ -251,7 +251,6 @@ public class Main {
             int wordCount = 0;
 
             for(String line : contents) {
-                System.out.println(line);
                 wordCount += countWord(line, banset);
             }
 
@@ -305,10 +304,8 @@ public class Main {
 
             assert fs != null;
             for (File f : fs) {
-                System.out.println(f.getName().matches(filename));
                 if(f.getName().matches(filename) && f.isFile()) {
                     sal.add(dirpath + f.getName());
-                    System.out.println(dirpath + f.getName());
                 }
             }
         }
@@ -343,7 +340,6 @@ public class Main {
             String[] fileList = findfiles(ap.filePath, ap.s);
 
             for(String f: fileList) {
-                System.out.println(f);
                 countFile(f, ap, out);
             }
 
