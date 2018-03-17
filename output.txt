@@ -1,0 +1,12 @@
+./test/big.c, 单词数: 7667
+./test/big.c, 行数: 2908
+./test/big.c, 代码行/空行/注释行: 1453/1284/171
+./test/test.c, 单词数: 93
+./test/test.c, 行数: 26
+./test/test.c, 代码行/空行/注释行: 15/8/3
+./test/null.c, 单词数: 0
+./test/null.c, 行数: 0
+./test/null.c, 代码行/空行/注释行: 0/0/0
+./test/test2.c, 单词数: 32
+./test/test2.c, 行数: 9
+./test/test2.c, 代码行/空行/注释行: 6/3/0
