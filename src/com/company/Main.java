@@ -149,6 +149,9 @@ public class Main {
                         case 'a':
                             this.a = true;
                             break;
+                        case 'c':
+                            this.c = true;
+                            break;
                         case 'o':
                             this.o = true;
                             i++;
