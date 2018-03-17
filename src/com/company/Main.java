@@ -131,7 +131,6 @@ public class Main {
          */
         ArgsParser(String[] args) {
             for (int i = 0; i < args.length; i++) {
-                System.out.println(args[i].charAt(0) == '-');
                 if(args[i].charAt(0) == '-' && args[i].length() < 3) {
                     switch (args[i].charAt(1)) {
                         case 't':
@@ -281,8 +280,42 @@ public class Main {
         out.close();
     }
 
+    public static String[] findfiles(String filepath) {
+        int idx = filepath.lastIndexOf('/');
+        String dirpath, filename;
+        ArrayList<String> sal = new ArrayList<>();
+
+        if(idx > 0) {
+            dirpath = filepath.substring(0, idx);
+            filename = filepath.substring(idx);
+        } else {
+            dirpath = "./";
+            filename = filepath;
+        }
+
+        File[] fs = (new File(dirpath)).listFiles();
+
+        for (File f : fs) {
+            if(f.getName().matches(filename)) {
+                sal.add(dirpath + f.getName());
+            }
+        }
+
+        return sal.toArray(new String[sal.size()]);
+    }
+
     public static void main(String[] args) {
 	// write your code here
         ArgsParser ap = (new ArgsParser(args));
+
+        String[] fileList = findfiles(ap.filePath);
+
+        for(String f: fileList) {
+            try {
+                countFile(f, ap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
