@@ -241,7 +241,7 @@ public class Main {
         String[] contents = lineList.toArray(new String[lineList.size()]);
 
         if(ap.c) {
-            out.printf("%s, 字符数: %d\n", filepath, sumChar(contents));
+            out.printf("%s, 字符数: %d\r\n", filepath, sumChar(contents));
         }
 
         if(ap.w) {
@@ -253,17 +253,17 @@ public class Main {
                 wordCount += countWord(line, banset);
             }
 
-            out.printf("%s, 单词数: %d\n", filepath, wordCount);
+            out.printf("%s, 单词数: %d\r\n", filepath, wordCount);
         }
 
         if(ap.l) {
-            out.printf("%s, 行数: %d\n", filepath, contents.length);
+            out.printf("%s, 行数: %d\r\n", filepath, contents.length);
         }
 
         if(ap.a) {
             int[] lineCout = countline(contents);
 
-            out.printf("%s, 代码行/空行/注释行: %d/%d/%d\n", filepath, lineCout[0], lineCout[1], lineCout[2]);
+            out.printf("%s, 代码行/空行/注释行: %d/%d/%d\r\n", filepath, lineCout[0], lineCout[1], lineCout[2]);
         }
     }
 
