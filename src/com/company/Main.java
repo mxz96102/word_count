@@ -44,11 +44,54 @@ public class Main {
         }
 
         return contents;
-
     }
 
+    /**
+     * read file to word array
+     * @param filePath {String}
+     * @return words {String[]}
+     * @throws IOException
+     */
+    public static String[] fileToWord(String filePath) throws IOException {
+        InputStream is = new FileInputStream(filePath);
+        StringBuilder buffer = new StringBuilder();
+        String line; // 用来保存每行读取的内容
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        line = reader.readLine(); // 读取第一行
+        while (line != null) { // 如果 line 为空说明读完了
+            buffer.append(line); // 将读到的内容添加到 buffer 中
+            buffer.append("\n"); // 添加换行符
+            line = reader.readLine(); // 读取下一行
+        }
+        reader.close();
+        is.close();
+
+        return buffer.toString().split("\n| |\t");
+    }
+
+    /**
+     * build file from file
+     * @param banlistFile {String}
+     * @return banwordset {Set<String>}
+     */
     public static Set<String> buildBanWord(String banlistFile) {
-        return null;
+        Set<String> s = new HashSet<>();
+
+        s.add("");
+
+        if(banlistFile == null) {
+            return s;
+        }
+
+        try {
+            String[] words = fileToWord(banlistFile);
+
+            s.addAll(Arrays.asList(words));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return s;
     }
 
     /**
@@ -140,21 +183,102 @@ public class Main {
         int[] linecount = {0, 0, 0};
 
         for (String line : contents) {
-            if(line.split(" |\n|\t").length > line.length()) {
+            if(line.trim().length() == 0) {
                 linecount[1]++;
-
-                if(!line.matches("[0-9a-zA-Z]") && line.contains("//")) {
-                    linecount[2]++;
-                }
-
             } else {
                 if(line.contains("//")) {
                     linecount[2]++;
                 }
-
-                linecount[0]++;
+                if(line.trim().indexOf("//") > 0) {
+                    linecount[0]++;
+                }
             }
         }
+
+        return linecount;
+    }
+
+    /**
+     * count char from contents array
+     * @param contents {String[]}
+     * @return sum {int}
+     */
+    public static int sumChar(String[] contents) {
+        int sum = 0;
+
+        for (String line : contents) {
+            sum += line.length();
+        }
+
+        return sum;
+    }
+
+    /**
+     * confirm file exists or create it
+     * @param filepath {String}
+     */
+    public static void confirmFile(String filepath) {
+        File f = new File(filepath);
+
+        if(!f.isFile()) {
+
+        }
+
+        try {
+            if(!f.exists()) {
+                f.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * count file content
+     * @param filepath {String}
+     * @param ap {ArgsParser}
+     * @throws FileNotFoundException
+     */
+    public static void countFile(String filepath, ArgsParser ap) throws FileNotFoundException {
+        ArrayList<String> lineList = getFileContents(filepath);
+        String[] contents = lineList.toArray(new String[lineList.size()]);
+        String outPath = "result.txt";
+
+        if(ap.o) {
+            outPath = ap.outPath;
+        }
+
+        confirmFile(outPath);
+
+        PrintWriter out = new PrintWriter(outPath);
+
+        if(ap.c) {
+            out.printf("%s, 字符数: %d", filepath, sumChar(contents));
+        }
+
+        if(ap.w) {
+            Set<String> banset = buildBanWord(ap.banPath);
+            int wordCount = 0;
+
+            for(String line : contents) {
+                wordCount += countWord(line, banset);
+            }
+
+            out.printf("%s, 单词数: %d", filepath, wordCount);
+        }
+
+        if(ap.l) {
+            out.printf("%s, 行数: %d", filepath, contents.length);
+        }
+
+        if(ap.w) {
+            int[] lineCout = countline(contents);
+
+            out.printf("%s, 代码行/空行/注释行: %d/%d/%d", filepath, lineCout[0], lineCout[1], lineCout[2]);
+        }
+
+        out.close();
     }
 
     public static void main(String[] args) {
